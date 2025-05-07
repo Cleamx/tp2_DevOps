@@ -35,6 +35,21 @@ jobs:
           aws ecr get-login-password --region $AWS_REGION \
             | docker login --username AWS --password-stdin $ECR_FRONTEND
 
+      - name: Validate backend Dockerfile
+        working-directory: ./backend
+        run: |
+          docker run --rm -i hadolint/hadolint < Dockerfile
+
+      - name: Validate frontend package.json
+        working-directory: ./frontend
+        run: |
+          npm install --dry-run
+
+      - name: Validate Terraform configuration
+        working-directory: ./infra
+        run: |
+          terraform validate
+
       - name: Build & Push backend image
         working-directory: ./backend
         run: |
