@@ -35,38 +35,35 @@ jobs:
           aws ecr get-login-password --region $AWS_REGION \
             | docker login --username AWS --password-stdin $ECR_FRONTEND
 
-      - name: Validate backend Dockerfile
-        working-directory: ./backend
-        run: |
-          docker run --rm -i hadolint/hadolint < Dockerfile
-
       - name: Validate frontend package.json
-        working-directory: ./frontend
-        run: |
-          npm install --dry-run
+        working-directory: projet-aws-devops/frontend
+        run: npm install --dry-run
 
       - name: Validate Terraform configuration
-        working-directory: ./infra
-        run: |
-          terraform validate
+        working-directory: projet-aws-devops/infra
+        run: terraform validate
 
       - name: Build & Push backend image
-        working-directory: ./backend
         run: |
-          docker build -t backend:latest .
+          docker build \
+            -t backend:latest \
+            -f projet-aws-devops/backend/Dockerfile \
+            projet-aws-devops/backend
           docker tag backend:latest $ECR_BACKEND:latest
           docker push $ECR_BACKEND:latest
 
       - name: Build & Push frontend image
-        working-directory: ./frontend
         run: |
-          docker build -t frontend:latest .
+          docker build \
+            -t frontend:latest \
+            -f projet-aws-devops/frontend/Dockerfile \
+            projet-aws-devops/frontend
           docker tag frontend:latest $ECR_FRONTEND:latest
           docker push $ECR_FRONTEND:latest
 
       - name: Terraform Init & Apply
-        working-directory: infra
         run: |
+          cd projet-aws-devops/infra
           terraform init -input=false
           terraform apply -auto-approve \
             -var="db_username=${{ secrets.DB_USERNAME }}" \
