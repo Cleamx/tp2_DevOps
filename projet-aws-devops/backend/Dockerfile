@@ -3,7 +3,7 @@ FROM node:16-alpine
 
 COPY package*.json ./
 
-RUN npm cache clean --force && npm ci --only=production
+RUN npm cache clean --force && npm install --verbose
 
 COPY . .
 
