@@ -45,7 +45,6 @@ jobs:
           docker tag backend:latest $ECR_BACKEND:latest
           docker push $ECR_BACKEND:latest
 
-
       - name: Build & Push frontend image
         run: |
           docker build \
@@ -55,7 +54,6 @@ jobs:
 
           docker tag frontend:latest $ECR_FRONTEND:latest
           docker push $ECR_FRONTEND:latest
-
 
       - name: Terraform Init & Apply
         run: |
