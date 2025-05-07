@@ -37,15 +37,25 @@ jobs:
 
       - name: Build & Push backend image
         run: |
-          docker build -t backend:latest ./projet-aws-devops/backend
+          docker build \
+            -t backend:latest \
+            -f projet-aws-devops/backend/Dockerfile \
+            projet-aws-devops/backend
+
           docker tag backend:latest $ECR_BACKEND:latest
           docker push $ECR_BACKEND:latest
 
+
       - name: Build & Push frontend image
         run: |
-          docker build -t frontend:latest ./projet-aws-devops/frontend
+          docker build \
+            -t frontend:latest \
+            -f projet-aws-devops/frontend/Dockerfile \
+            projet-aws-devops/frontend
+
           docker tag frontend:latest $ECR_FRONTEND:latest
           docker push $ECR_FRONTEND:latest
+
 
       - name: Terraform Init & Apply
         run: |
