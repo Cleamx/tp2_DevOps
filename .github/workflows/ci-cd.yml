@@ -39,8 +39,8 @@ jobs:
         run: |
           docker build \
             -t backend:latest \
-            -f projet-aws-devops/backend/Dockerfile \
-            projet-aws-devops/backend
+            -f ./projet-aws-devops/backend/Dockerfile \
+            ./projet-aws-devops/backend
 
           docker tag backend:latest $ECR_BACKEND:latest
           docker push $ECR_BACKEND:latest
@@ -49,8 +49,8 @@ jobs:
         run: |
           docker build \
             -t frontend:latest \
-            -f projet-aws-devops/frontend/Dockerfile \
-            projet-aws-devops/frontend
+            -f ./projet-aws-devops/frontend/Dockerfile \
+            ./projet-aws-devops/frontend
 
           docker tag frontend:latest $ECR_FRONTEND:latest
           docker push $ECR_FRONTEND:latest
