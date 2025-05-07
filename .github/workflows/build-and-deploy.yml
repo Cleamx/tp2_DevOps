@@ -15,8 +15,13 @@ jobs:
       ECR_FRONTEND: 122610518396.dkr.ecr.eu-west-3.amazonaws.com/frontend
 
     steps:
+      - name: Debug workspace
+        run: ls -R
+
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
