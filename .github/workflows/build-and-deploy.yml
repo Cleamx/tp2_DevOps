@@ -50,18 +50,21 @@ jobs:
 
       - name: Build and Push Backend Image
         run: |
-          if [ ! -d "projet-aws-devops/backend" ]; then
-            echo "Error: Directory projet-aws-devops/backend does not exist.";
+          if [ ! -d "backend" ]; then
+            echo "Error: Directory backend does not exist.";
             exit 1;
           fi
-          docker build -t backend:latest -f projet-aws-devops/backend/Dockerfile projet-aws-devops/backend
+          docker build -t backend:latest -f backend/Dockerfile backend
           docker tag backend:latest $ECR_BACKEND:latest
           docker push $ECR_BACKEND:latest
 
       - name: Build and Push Frontend Image
-        working-directory: projet-aws-devops/frontend
         run: |
-          docker build -t frontend:latest -f Dockerfile .
+          if [ ! -d "frontend" ]; then
+            echo "Error: Directory frontend does not exist.";
+            exit 1;
+          fi
+          docker build -t frontend:latest -f frontend/Dockerfile frontend
           docker tag frontend:latest $ECR_FRONTEND:latest
           docker push $ECR_FRONTEND:latest
 
