@@ -13,14 +13,17 @@ jobs:
       ECR_FRONTEND: 122610518396.dkr.ecr.eu-west-3.amazonaws.com/frontend
 
     steps:
+      # Étape 1 : Récupération du code source
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Étape 2 : Configuration de Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
+      # Étape 3 : Configuration des identifiants AWS
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -28,6 +31,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region:            ${{ env.AWS_REGION }}
 
+      # Étape 4 : Connexion à Amazon ECR
       - name: Login to ECR
         run: |
           aws ecr get-login-password --region $AWS_REGION \
@@ -35,26 +39,29 @@ jobs:
           aws ecr get-login-password --region $AWS_REGION \
             | docker login --username AWS --password-stdin $ECR_FRONTEND
 
+      # Étape 5 : Construction et push de l'image Docker pour le backend
       - name: Build & Push backend image
         run: |
           docker build \
             -t backend:latest \
-            -f ./projet-aws-devops/backend/Dockerfile \
-            ./projet-aws-devops/backend
+            -f projet-aws-devops/backend/Dockerfile \
+            projet-aws-devops/backend
 
           docker tag backend:latest $ECR_BACKEND:latest
           docker push $ECR_BACKEND:latest
 
+      # Étape 6 : Construction et push de l'image Docker pour le frontend
       - name: Build & Push frontend image
         run: |
           docker build \
             -t frontend:latest \
-            -f ./projet-aws-devops/frontend/Dockerfile \
-            ./projet-aws-devops/frontend
+            -f projet-aws-devops/frontend/Dockerfile \
+            projet-aws-devops/frontend
 
           docker tag frontend:latest $ECR_FRONTEND:latest
           docker push $ECR_FRONTEND:latest
 
+      # Étape 7 : Initialisation et application de Terraform
       - name: Terraform Init & Apply
         run: |
           cd projet-aws-devops/infra
