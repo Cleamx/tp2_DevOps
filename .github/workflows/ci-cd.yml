@@ -36,21 +36,21 @@ jobs:
             | docker login --username AWS --password-stdin $ECR_FRONTEND
 
       - name: Build & Push backend image
-        working-directory: projet-aws-devops/backend
+        working-directory: cd backend
         run: |
           docker build -t backend:latest .
           docker tag backend:latest $ECR_BACKEND:latest
           docker push $ECR_BACKEND:latest
 
       - name: Build & Push frontend image
-        working-directory: projet-aws-devops/frontend
+        working-directory: cd frontend
         run: |
           docker build -t frontend:latest .
           docker tag frontend:latest $ECR_FRONTEND:latest
           docker push $ECR_FRONTEND:latest
 
       - name: Terraform Init & Apply
-        working-directory: projet-aws-devops/infra
+        working-directory: cd infra
         run: |
           terraform init -input=false
           terraform apply -auto-approve \
